@@ -1,16 +1,74 @@
-import Ship from "./Ship"
+const {Ship} = require("./Ship");
+
+class BoardTile
+{
+    #ship = null
+    #hit = false
+    #index = -1
+
+    constructor(ship=null,hit=false,index=-1)
+    {
+        this.#ship = ship
+        this.#hit=hit
+        this.#index = index
+    }
+
+    updateWithShip(ship, index)
+    {
+        this.#ship = ship
+        this.#index = index
+    }
+
+    isHit()
+    {
+        return this.#hit
+    }
+
+    hasShip()
+    {
+        return !(this.#ship == null)
+    }
+
+
+    hitTile()
+    {
+        this.#hit = true
+        if (!this.hasShip())
+        {
+            return 0
+        }
+
+        this.#ship.hit(this.#index)
+
+        if (!this.#ship.isSunk())
+        {
+            return 1
+        }
+
+        return 2
+    }
+}
 
 class Gameboard
 {
     #ships = []
-    #board = [[]]
+    #board = []
     #size = 9
 
     #DEFAULT_BOARD_SPACE = {ship:null,hit:false,index:-1}
 
     constructor(size=9)
     {
-        this.#board = Array(size).fill(Array(size).fill(this.#DEFAULT_BOARD_SPACE))
+        if (size < 2) { throw new Error("Invalid Size. Size cannot be less than 2") }
+        for (let i = 0; i < size; i++)
+        {
+            let temp = []
+            for (let j = 0; j < size; j++)
+            {
+                temp[j] = new BoardTile();
+            }
+            this.#board.push(temp)
+        }
         this.#size = size
     }
 
@@ -33,17 +91,11 @@ class Gameboard
         {
             if (isVertical)
             {
-                let tile = this.#board[location[0]][location[1]+i]
-                tile.ship = ship
-                tile.index = i
-                tile.hit = false
+                this.#board[location[0]][location[1]+i].updateWithShip(ship, i)
             }
             else
             {
-                let tile = this.#board[location[0]+i][location[1]]
-                tile.ship = ship
-                tile.index = i
-                tile.hit = false
+                this.#board[location[0]+i][location[1]].updateWithShip(ship, i)
             }
         }
 
@@ -52,22 +104,12 @@ class Gameboard
 
     receiveAttack(location)
     {
-        let hitTile = this.#board[location[0]][location[1]]
+        /*
+        Function that takes a board location and checks if it was a miss, if it was a hit or if it was a hit that sunk a ship.
+        It returns a number with 0 being miss, 1 being hit and 2 being a sinking hit.
+        */
+        return this.#board[location[0]][location[1]].hitTile()
 
-        tile.hit = true
-        if (hitTile.ship == null)
-        {
-            return "Miss at " + location
-        }
-        else
-        {
-            hitTile.ship.hit(hitTile.index)
-            if (hitTile.ship.isSunk())
-            {
-                return "Hit and sunk a " + hitTile.ship.getName() + " at " + location + "!"
-            }
-            return "Hit a " + hitTile.ship.getName() + " at " + location
-        }
     }
 
     allShipsSunk()
@@ -85,6 +127,31 @@ class Gameboard
 
     reset()
     {
-        this.#board = Array(size).fill(Array(size).fill(this.#DEFAULT_BOARD_SPACE))
+        for (let i = 0; i < size; i++)
+        {
+            let temp = []
+            for (let j = 0; j < size; j++)
+            {
+                temp[j] = new BoardTile();
+            }
+            this.#board.push(temp)
+        }
     }
-}
+
+    getSize()
+    {
+        return this.#size
+    }
+
+    getShips()
+    {
+        return this.#ships
+    }
+
+    getBoard()
+    {
+        return this.#board
+    }
+};
+
+module.exports = { Gameboard };

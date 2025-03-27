@@ -36,6 +36,7 @@ class Ship
         }
 
         this.#hitSections = Array(this.#length).fill(false)
+        this.#isVertical = false
     }
 
     isValidLocation(coordinates, boardSize, isVertical=false)
@@ -112,6 +113,11 @@ class Ship
     getHitSections()
     {
         return this.#hitSections
+    }
+
+    getLocation()
+    {
+        return this.#boardLocation
     }
 
 }
