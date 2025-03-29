@@ -47,6 +47,11 @@ class BoardTile
 
         return 2
     }
+
+    getShip()
+    {
+        return this.#ship
+    }
 }
 
 class Gameboard
@@ -100,6 +105,8 @@ class Gameboard
         }
 
         this.#ships.push(ship)
+
+        return ""
     }
 
     receiveAttack(location)
@@ -123,6 +130,83 @@ class Gameboard
         }
 
         return true
+    }
+
+    getPlayerBoard()
+    {
+        /*
+        Returns a 2D array of integers representing the board state from the player perspective
+        */
+       let returnArray = []
+       for (let i = 0; i < this.#size; i++)
+       {
+            let row = []
+            for (let j = 0; j < this.#size; j++)
+            {
+                let tile = this.#board[i][j]
+                if (!tile.isHit())
+                {
+                    if (tile.hasShip())
+                    {
+                        row.push(3)
+                    }
+                    else
+                    {
+                        row.push(-1)
+                    }
+                }
+                else if (!tile.hasShip())
+                {
+                    row.push(0)
+                }
+                else if (!tile.getShip().isSunk())
+                {
+                    row.push(1)
+                }
+                else
+                {
+                    row.push(2)
+                }
+            }
+            returnArray.push(row)
+       }
+
+       return returnArray
+    }
+
+    getEnemyBoard()
+    {
+        /*
+        Returns a 2D array of integers representing the board state from an enemy perspective
+        */
+       let returnArray = []
+       for (let i = 0; i < this.#size; i++)
+       {
+            let row = []
+            for (let j = 0; j < this.#size; j++)
+            {
+                let tile = this.#board[i][j]
+                if (!tile.isHit())
+                {
+                    row.push(-1)
+                }
+                else if (!tile.hasShip())
+                {
+                    row.push(0)
+                }
+                else if (!tile.getShip().isSunk())
+                {
+                    row.push(1)
+                }
+                else
+                {
+                    row.push(2)
+                }
+            }
+            returnArray.push(row)
+       }
+
+       return returnArray
     }
 
     reset()
