@@ -1,4 +1,4 @@
-const {Ship} = require("./Ship");
+const {Ship} = require("../Ship");
 
 class BoardTile
 {

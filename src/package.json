@@ -1,0 +1,23 @@
+{
+  "name": "battleship",
+  "version": "1.0.0",
+  "description": "Battleship Game made as part of Odin Project Curriculum",
+  "keywords": [
+    "Battleship"
+  ],
+  "homepage": "https://github.com/Chipset-0/Battleship#readme",
+  "bugs": {
+    "url": "https://github.com/Chipset-0/Battleship/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chipset-0/Battleship.git"
+  },
+  "license": "ISC",
+  "author": "Chipset-0",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  }
+}
