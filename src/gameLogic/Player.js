@@ -59,8 +59,4 @@ class Player
     }
 }
 
-let p = new Player(1,false,4)
-p.placeShip("Tug", [1,1], false)
-p.receiveAttack([1,1])
-console.log(p.getEnemyGameboard())
-console.log(p.getOwnGameboard())
+export {Player}

@@ -12,7 +12,8 @@ module.exports = {
   },
   devtool: "eval-source-map",
   devServer: {
-    watchFiles: ["./src/index.html", "./src/gameLogic"],
+    watchFiles: ["./src/index.html"],
+    watchFiles: ["./src/css/styles.css"],
   },
   plugins: [
     new HtmlWebpackPlugin({
