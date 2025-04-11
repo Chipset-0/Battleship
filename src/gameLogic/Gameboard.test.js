@@ -1,4 +1,4 @@
-const {Gameboard} = require("./Gameboard.js");
+import {Gameboard} from "./Gameboard.js";
 
 //Test constructor
 test("Gameboard with length less than 2 will be rejected", () =>

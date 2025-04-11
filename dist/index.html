@@ -1,14 +1,69 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="e6e738a2d74b3ca28596.js" defer></script>
-<script defer src="main.js"></script></head>
-<body>
-    <div class="Test">
-        Test Div
-    </div>
-</body>
-</html>
+<head><script defer src="main.js"></script></head>Html Webpack Plugin:
+<pre>
+  Error: Child compilation failed:
+  Module not found: Error: Can't resolve 'html-loader' in '/home/zdenn/Documents/OdinProject/JavascriptCourse/Battleship'
+  ModuleNotFoundError: Module not found: Error: Can't resolve 'html-loader' in '/home/zdenn/Documents/OdinProject/JavascriptCourse/Battleship'
+      at /usr/share/nodejs/webpack/lib/Compilation.js:2016:28
+      at /usr/share/nodejs/webpack/lib/NormalModuleFactory.js:798:13
+      at eval (eval at create (/usr/share/nodejs/tapable/lib/HookCodeFactory.js:33:10), <anonymous>:10:1)
+      at /usr/share/nodejs/webpack/lib/NormalModuleFactory.js:270:22
+      at eval (eval at create (/usr/share/nodejs/tapable/lib/HookCodeFactory.js:33:10), <anonymous>:9:1)
+      at /usr/share/nodejs/webpack/lib/NormalModuleFactory.js:541:15
+      at /usr/share/nodejs/webpack/lib/NormalModuleFactory.js:116:11
+      at /usr/share/nodejs/webpack/lib/NormalModuleFactory.js:612:8
+      at /usr/share/nodejs/neo-async/async.js:2830:7
+      at done (/usr/share/nodejs/neo-async/async.js:2925:13)
+  
+  - Compilation.js:2016 
+    /usr/share/nodejs/webpack/lib/Compilation.js:2016:28
+  
+  - NormalModuleFactory.js:798 
+    /usr/share/nodejs/webpack/lib/NormalModuleFactory.js:798:13
+  
+  
+  - NormalModuleFactory.js:270 
+    /usr/share/nodejs/webpack/lib/NormalModuleFactory.js:270:22
+  
+  
+  - NormalModuleFactory.js:541 
+    /usr/share/nodejs/webpack/lib/NormalModuleFactory.js:541:15
+  
+  - NormalModuleFactory.js:116 
+    /usr/share/nodejs/webpack/lib/NormalModuleFactory.js:116:11
+  
+  - NormalModuleFactory.js:612 
+    /usr/share/nodejs/webpack/lib/NormalModuleFactory.js:612:8
+  
+  - async.js:2830 
+    /usr/share/nodejs/neo-async/async.js:2830:7
+  
+  - async.js:2925 done
+    /usr/share/nodejs/neo-async/async.js:2925:13
+  
+  - child-compiler.js:211 
+    [Battleship]/[html-webpack-plugin]/lib/child-compiler.js:211:18
+  
+  - Compiler.js:551 finalCallback
+    /usr/share/nodejs/webpack/lib/Compiler.js:551:5
+  
+  - Compiler.js:577 
+    /usr/share/nodejs/webpack/lib/Compiler.js:577:11
+  
+  - Compiler.js:1196 
+    /usr/share/nodejs/webpack/lib/Compiler.js:1196:17
+  
+  
+  - Hook.js:18 Hook.CALL_ASYNC_DELEGATE [as _callAsync]
+    /usr/share/nodejs/tapable/lib/Hook.js:18:14
+  
+  - Compiler.js:1192 
+    /usr/share/nodejs/webpack/lib/Compiler.js:1192:33
+  
+  - Compilation.js:2787 finalCallback
+    /usr/share/nodejs/webpack/lib/Compilation.js:2787:11
+  
+  - Compilation.js:3092 
+    /usr/share/nodejs/webpack/lib/Compilation.js:3092:11
+  
+  
+</pre>

@@ -1,4 +1,4 @@
-const {Gameboard} = require("./Gameboard");
+import { Gameboard } from "./Gameboard.js";
 
 class Player
 {
@@ -20,7 +20,14 @@ class Player
 
     receiveAttack(location)
     {
-        this.#gameboard.receiveAttack(location)
+        if (location.length == 2 && this.#gameboard.length > location[0] && location[0] > 0 && this.#gameboard.length > location[1] && location[1] > 0)
+        {
+            this.#gameboard.receiveAttack(location)
+        }
+        else
+        {
+            console.log("Invalid location received: " + location)
+        }
     }
 
     placeShip(shipType, location, orientation)
@@ -59,4 +66,4 @@ class Player
     }
 }
 
-export {Player}
+export { Player };

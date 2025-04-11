@@ -1,4 +1,4 @@
-const {Ship} = require("./Ship");
+import {Ship} from "./Ship";
 
 test("Ship Creates Carrier of Length 5", () => {
     expect(new Ship("Carrier").getLength()).toBe(5)
