@@ -1,4 +1,4 @@
-const {Ship} = require("../Ship");
+const { Ship } = require("./Ship.js")
 
 class BoardTile
 {
@@ -238,4 +238,4 @@ class Gameboard
     }
 };
 
-module.exports = { Gameboard };
+module.exports =  { Gameboard };

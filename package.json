@@ -1,10 +1,23 @@
 {
-  "devDependencies": {
-    "css-loader": "^7.1.2",
-    "html-loader": "^5.1.0",
-    "html-webpack-plugin": "^5.6.3",
-    "style-loader": "^4.0.0",
-    "webpack": "^5.99.5",
-    "webpack-cli": "^6.0.1"
+  "name": "battleship",
+  "version": "1.0.0",
+  "description": "Battleship Game made as part of Odin Project Curriculum",
+  "keywords": [
+    "Battleship"
+  ],
+  "homepage": "https://github.com/Chipset-0/Battleship#readme",
+  "bugs": {
+    "url": "https://github.com/Chipset-0/Battleship/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chipset-0/Battleship.git"
+  },
+  "license": "ISC",
+  "author": "Chipset-0",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
   }
 }
