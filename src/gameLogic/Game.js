@@ -13,6 +13,7 @@ class Game
     ]
     #currShipFirst = 0;
     #currShipSecond = 0;
+    #currentPlayer
 
     constructor(isPvp=false)
     {
@@ -52,4 +53,20 @@ class Game
         }
 
     }
+
+    bindTilesToShipPlace(tiles)
+    {
+
+    }
+
+    #hoverTile()
+    {
+
+    }
+    //TODO Add functionality to bind functions to Game that add functionality to update the website
+    /*
+    bindTilesTo
+
+    playGame(boardElement, )
+    */
 }

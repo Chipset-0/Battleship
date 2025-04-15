@@ -18,9 +18,9 @@ h3
     text-align: center;
 }
 
-.hidden
+button:hover
 {
-    visibility: hidden;
+    cursor: pointer;
 }
 
 .first-cover
@@ -44,20 +44,52 @@ h3
     color: white;
 }
 
-.screen-cover div
+.turn-cover
 {
     width: fit-content;
     height: fit-content;
     display: grid;
 }
 
+.gamemode-options
+{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-content: center;
+    gap:16px
+}
+
+.gamemode-option
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap:32px
+}
+
+.gamemode-option button
+{
+    width: 30%;
+    background-color: white;
+    font-size: x-large;
+    border: none;
+    border-radius: 16px;
+}
+
+.gamemode-select img
+{
+    max-width: 50%;
+    aspect-ratio: 1 / 1;
+}
+
 .battleship-container
 {
     display: grid;
-    grid-template-columns: 2fr 3fr 2fr;
+    grid-template-columns: 25% 1fr 25%;
     margin:32px;
     padding:16px;
-    gap:32px
+    gap:32px;
+    place-items: center;
 }
 
 .sidebar
@@ -66,6 +98,9 @@ h3
     border-radius: 32px;
     width: 100%;
     padding: 8px;
+    background-color: white;
+    height:100%;
+    max-height: 100vh;
 }
 
 .container
@@ -77,24 +112,22 @@ h3
 {
     display: grid;
     grid-template-rows: 1fr 2fr 6fr;
-    margin-left: 0;
-    margin-right: auto;
 }
 
 .left-sidebar .container button
 {
     align-self: center;
-    width: 30%;
+    width: fit-content;
     justify-self: center;
     background-color: transparent;
     border: solid 1px black;
     border-radius: 4px;
+    text-wrap: auto;
+    font-size: xx-large;
 }
 
 .right-sidebar
 {
-    margin-left: auto;
-    margin-right: 0;
     display: grid;
     grid-template-rows: 10% 90%;
 }
@@ -118,7 +151,6 @@ h3
 
 .ship-display
 {
-    height: 100%;
     display: flex;
     justify-content: flex-end;
 }
@@ -142,6 +174,7 @@ h3
 {
     aspect-ratio: 1 / 1;
     border: 2px black solid;
+    width: 10%;
 }
 
 .board-container
@@ -150,6 +183,8 @@ h3
     grid-template-rows: 1fr 9fr;
     align-content: center;
     aspect-ratio: 1/1;
+    width:100%;
+    padding:5%
 }
 
 .board-container h3
