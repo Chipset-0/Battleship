@@ -1,23 +1,38 @@
 {
   "name": "battleship",
   "version": "1.0.0",
-  "description": "Battleship Game made as part of Odin Project Curriculum",
-  "keywords": [
-    "Battleship"
-  ],
-  "homepage": "https://github.com/Chipset-0/Battleship#readme",
-  "bugs": {
-    "url": "https://github.com/Chipset-0/Battleship/issues"
+  "description": "Battleship against player or against computer",
+  "main": "src/index.js",
+  "devDependencies": {
+    "css-loader": "^X.X.X",
+    "eslint": "^8.57.0",
+    "html-loader": "^5.1.0",
+    "html-webpack-plugin": "^5.6.0",
+    "jest": "^29.7.0",
+    "style-loader": "^X.X.X",
+    "webpack": "^5.90.3",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.0.4",
+    "webpack-merge": "^5.10.0"
+  },
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "start": "webpack serve --open --config webpack.dev.js",
+    "pages": "git subtree push --prefix dist origin gh-pages",
+    "build": "webpack --config webpack.prod.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Chipset-0/Battleship.git"
   },
-  "license": "ISC",
+  "keywords": [
+    "Battleship"
+  ],
   "author": "Chipset-0",
-  "type": "commonjs",
-  "main": "index.js",
-  "scripts": {
-    "test": "jest"
-  }
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Chipset-0/Battleship/issues"
+  },
+  "homepage": "https://github.com/Chipset-0/Battleship#readme"
 }

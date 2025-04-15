@@ -8,17 +8,67 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+    <div class="screen-cover second-cover">
+        <div class="turn-cover hidden">
+            <h1>Player 1 Turn</h1>
+            <button class="player-switch-button">Continue</button>
+        </div>
+        <div class="gamemode-select">
+            
+        </div>
+    </div>
     <div class="battleship-container">
-        <div class="buttons-container">
-
+        <div class="left-sidebar sidebar">
+            <div>
+                <h3>Buttons</h3>
+            </div>
+            <div class="container">
+                <button class="button-auto-place">Automatically Place?</button>
+                <button class="button-reset">Reset?</button>
+            </div>
+            <div>
+                <div class="board small"></div>
+            </div>
         </div>
         <div class="board-container">
             <h3>Player 1</h3>
-            <div class="board">
+            <div>
+                <div class="board" id="main-board">
+                </div>
             </div>
         </div>
-        <div class="ships-container">
+        <div class="right-sidebar sidebar">
             <h3>Ships</h3>
+            <div class="ship-list">
+                <button class="carrier">
+                    <div class="ship-display carrier">
+                        <div class="ship-tile ship-exists"></div>
+                        <div class="ship-tile ship-exists"></div>
+                        <div class="ship-tile ship-exists"></div>
+                        <div class="ship-tile ship-exists"></div>
+                        <div class="ship-tile ship-exists"></div>
+                    </div>
+                </button>
+                <button class="destroyer">
+                    <div class="ship-display destroyer">
+                        <div class="ship-tile ship-exists"></div>
+                        <div class="ship-tile ship-exists"></div>
+                        <div class="ship-tile ship-exists"></div>
+                        <div class="ship-tile ship-exists"></div>
+                    </div>
+                </button>
+                <button class="submarine">
+                    <div class="ship-display submarine">
+                        <div class="ship-tile ship-exists"></div>
+                        <div class="ship-tile ship-exists"></div>
+                        <div class="ship-tile ship-exists"></div>
+                    </div></button>
+                <button class="tug">
+                    <div class="ship-display tug">
+                        <div class="ship-tile ship-exists"></div>
+                        <div class="ship-tile ship-exists"></div>
+                    </div></button></button>
+            </div>
         </div>
     </div>
 </body>

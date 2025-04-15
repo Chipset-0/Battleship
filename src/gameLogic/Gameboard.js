@@ -77,6 +77,22 @@ class Gameboard
         this.#size = size
     }
 
+    isValidLocation(location, length, isVertical)
+    {
+        if (location.length != 2 || location[0] < 0 || location[1] < 0)
+        {
+            return false
+        }
+        let x = location[0]
+        let y = location[1]
+        if ((isVertical && y+length > this.#size) || (!isVertical && x+length > this.#size))
+        {
+            return false
+        }
+
+        return true;
+    }
+
     placeShip(shipType, location, isVertical=false)
     {
         let ship

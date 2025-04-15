@@ -97,3 +97,38 @@ test("Gameboard will properly reset", () =>
         x.receiveAttack([1,1])
         expect(x.allShipsSunk()).toBe(false)
     })
+
+//Test isValidLocation 
+
+test("Gameboard will identify invalid horizontal location", () =>
+{
+    let x = new Gameboard(9)
+    expect(x.isValidLocation([7,3],5,false)).toBe(false)
+})
+
+test("Gameboard will identify invalid vertical location", () =>
+{
+    let x = new Gameboard(9)
+    expect(x.isValidLocation([3,7],5,true)).toBe(false)
+})
+
+test("Gameboard will identify valid horizontal location", () =>
+{
+    let x = new Gameboard(9)
+    expect(x.isValidLocation([3,7],5,false)).toBe(true)
+    expect(x.isValidLocation([0,8], 5, false)).toBe(true)
+})
+
+
+test("Gameboard will identify valid vertical location", () =>
+    {
+        let x = new Gameboard(9)
+        expect(x.isValidLocation([7,3],5,true)).toBe(true)
+        expect(x.isValidLocation([8,0], 5, true)).toBe(true)
+    })
+
+test ("Gameboard will detect negative locations", () =>
+    {
+        let x = new Gameboard(9)
+        expect(x.isValidLocation([-1,-1],5,true)).toBe(false)
+    })

@@ -4,7 +4,7 @@ const {Player} = require("./Player")
 test("Player will be created without a specified gameboard size",
     () => {
         let p =  new Player();
-        expect(p.getOwnGameboard().length).toBe(0);
+        expect(p.getOwnGameboard().length).toBe(9);
     }
 );
 //Test receive attack

@@ -39,6 +39,11 @@ class Player
         }
     }   
 
+    isValidLocation(length, location, isVertical=false)
+    {
+        return this.#gameboard.isValidLocation(location,length,isVertical)
+    }
+
     getPlayerNumber()
     {
         return this.#playerNumber
