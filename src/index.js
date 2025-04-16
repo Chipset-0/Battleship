@@ -1,6 +1,6 @@
 import "./css/styles.css";
 const {createTileButton, createGamemodeSelect, createTurnCover} = require("./websiteLogic/uiFactory.js");
-const {Player} = require("./gameLogic/Player.js")
+const {Player} = require("./gameObjects/Player.js")
 
 
 let p = new Player(3)

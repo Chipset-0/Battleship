@@ -1,7 +1,7 @@
 :root 
 {
     --playerOne: rgb(207, 60, 60);
-    --playerTwo: rgb(70, 70, 211)
+    --playerTwo: rgb(70, 70, 211);
 }
 
 body
@@ -82,6 +82,27 @@ button:hover
     aspect-ratio: 1 / 1;
 }
 
+.game-end-screen
+{
+    width:fit-content;
+    height:fit-content;
+    display: flex;
+    flex-direction: column;
+    gap:16px;
+    align-items: center;
+}
+
+.button-restart-game
+{
+    width: fit-content;
+    justify-self: center;
+    font-size: x-large;
+    background-color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 16px;
+}
+
 .battleship-container
 {
     display: grid;
@@ -98,7 +119,7 @@ button:hover
     border-radius: 32px;
     width: 100%;
     padding: 8px;
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.5);
     height:100%;
     max-height: 100vh;
 }
@@ -108,13 +129,29 @@ button:hover
     display: grid;
 }
 
+
+
 .left-sidebar
 {
     display: grid;
-    grid-template-rows: 1fr 2fr 6fr;
+    grid-template-rows: 2fr 6fr;
 }
 
-.left-sidebar .container button
+.current-ship-indicator
+{
+    display: grid;
+    justify-content: center;
+    align-content: center;
+}
+
+.button-container
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.sidebar-button
 {
     align-self: center;
     width: fit-content;
@@ -175,16 +212,17 @@ button:hover
     aspect-ratio: 1 / 1;
     border: 2px black solid;
     width: 10%;
+    border-radius: 8px;
 }
 
 .board-container
 {
     display: grid;
-    grid-template-rows: 1fr 9fr;
+    grid-template-rows: 1fr 7fr 1fr;
     align-content: center;
     aspect-ratio: 1/1;
     width:100%;
-    padding:5%
+    padding: 0px 5%;
 }
 
 .board-container h3
@@ -204,6 +242,30 @@ button:hover
     grid-template-rows: repeat(9,1fr);
     border-radius: 16px;
 
+}
+
+.rotate-container
+{
+    display: grid;
+    justify-content: center;
+    height: 100%;
+    padding-top: 16px;
+}
+
+.rotate-button
+{
+    align-self: center;
+    width:fit-content;
+    font-size: x-large;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: solid black 2px;
+    padding: 4px;
+    border-radius: 8px;
+}
+
+.update-text-container
+{
+    text-align: center;
 }
 
 .tile

@@ -2,7 +2,7 @@ const { Gameboard } = require("./Gameboard.js");
 
 class Player
 {
-    #gameboard = null
+    #gameboard = Gameboard()
     #playerNumber = 1
     #isComputer = false
 
@@ -68,6 +68,11 @@ class Player
         Returns a gameboard that is shown to the enemy player (Shows hits, sunk ships)
         */
         return this.#gameboard.getEnemyBoard()
+    }
+
+    getHasLost()
+    {
+        return this.#gameboard.allShipsSunk()
     }
 }
 
