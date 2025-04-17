@@ -2,7 +2,7 @@ const { Gameboard } = require("./Gameboard.js");
 
 class Player
 {
-    #gameboard = Gameboard()
+    #gameboard = new Gameboard()
     #playerNumber = 1
     #isComputer = false
 
@@ -70,7 +70,7 @@ class Player
         return this.#gameboard.getEnemyBoard()
     }
 
-    getHasLost()
+    hasLost()
     {
         return this.#gameboard.allShipsSunk()
     }

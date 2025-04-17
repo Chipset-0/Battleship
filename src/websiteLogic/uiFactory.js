@@ -3,11 +3,11 @@ import COMPUTER_IMAGE from "../assets/pvp-freepik.png"
 
 //TODO Create functions that create end game screens, ship indicators, battleship UI and placing ship UI
 
-function createTileButton(player, location, state=-1)
+function createTileButton(location, state=-1, clickFunction, hoverFunction)
 {
     let button = document.createElement("button")
     button.classList.add("tile")
-    button.style.gridArea = `${location[0]+1} / ${location[1]+1} / span 1 / span 1`;
+    button.style.gridArea = `${location[0]+1} / ${location[1]+1} / ${location[0]+1} / ${location[1]+1}`;
     switch(state)
     {
         case -1:
@@ -25,11 +25,12 @@ function createTileButton(player, location, state=-1)
         case 3:
             button.classList.add("ship-exists")
     }
-    button.addEventListener('click', () => {player.receiveAttack(location)})
+    button.addEventListener('click', () => {clickFunction(location)})
+    button.addEventListener('mouseover', () => {hoverFunction(location)})
     return button
 }
 
-function createGamemodeSelect()
+function createGamemodeSelect(functionComputer, functionPlayer)
 {
   // Create the outer container div
   const gamemodeSelect = document.createElement('div');
@@ -41,41 +42,52 @@ function createGamemodeSelect()
   gamemodeSelect.appendChild(gamemodeOptions);
 
   // First game mode option
-  const gamemodeOption1 = document.createElement('div');
-  gamemodeOption1.className = 'gamemode-option';
-  gamemodeOptions.appendChild(gamemodeOption1);
+  const gamemodeOptionComputer = document.createElement('div');
+  gamemodeOptionComputer.className = 'gamemode-option';
+  gamemodeOptions.appendChild(gamemodeOptionComputer);
 
   const img1 = document.createElement('img');
   img1.src = COMPUTER_IMAGE;
-  gamemodeOption1.appendChild(img1);
+  gamemodeOptionComputer.appendChild(img1);
 
-  const button1 = document.createElement('button');
-  button1.className = 'computer-gamemode-button';
+  const buttonComputer = document.createElement('button');
+  buttonComputer.className = 'computer-gamemode-button';
+
   const h41 = document.createElement('h4');
   h41.textContent = 'Select';
-  button1.appendChild(h41);
-  gamemodeOption1.appendChild(button1);
+  buttonComputer.appendChild(h41);
+  gamemodeOptionComputer.appendChild(buttonComputer);
+
+  buttonComputer.addEventListener('click', () => {
+    functionComputer()
+  })
 
   // Second game mode option
-  const gamemodeOption2 = document.createElement('div');
-  gamemodeOption2.className = 'gamemode-option';
-  gamemodeOptions.appendChild(gamemodeOption2);
+  const gamemodeOptionPlayer = document.createElement('div');
+  gamemodeOptionPlayer.className = 'gamemode-option';
+  gamemodeOptions.appendChild(gamemodeOptionPlayer);
 
   const img2 = document.createElement('img');
   img2.src = HUMAN_IMAGE;
-  gamemodeOption2.appendChild(img2);
+  gamemodeOptionPlayer.appendChild(img2);
 
-  const button2 = document.createElement('button');
-  button2.className = 'player-gamemode-button';
+  const buttonPlayer = document.createElement('button');
+  buttonPlayer.className = 'player-gamemode-button';
+
   const h42 = document.createElement('h4');
   h42.textContent = 'Select';
-  button2.appendChild(h42);
-  gamemodeOption2.appendChild(button2);
+  buttonPlayer.appendChild(h42);
+  gamemodeOptionPlayer.appendChild(buttonPlayer);
+
+
+  buttonPlayer.addEventListener('click', () => {
+    functionPlayer()
+  })
 
   return gamemodeSelect;
 }
 
-function createTurnCover() {
+function createPlayerSwitch() {
     // Create the main div element
     const turnCover = document.createElement('div');
     turnCover.className = 'turn-cover';
@@ -137,7 +149,7 @@ function createGameEndScreen(didPlayerOneWin=true, isComputerPlaying=false)
     return gameEndScreen;
 }
 
-function createBoardElement() {
+function createBoardElement(playerNumber, rotateFunction) {
     // Create the main container div
     const boardContainer = document.createElement("div");
     boardContainer.classList.add("board-container");
@@ -166,8 +178,17 @@ function createBoardElement() {
     rotateButton.classList.add("rotate-button");
     rotateButton.textContent = "Rotate";
 
+    rotateButton.addEventListener("click", () => {rotateFunction()})
+
     // Append button inside the rotate container
     rotateContainer.appendChild(rotateButton);
+
+    const shipPlaceVisual = document.createElement("div");
+    shipPlaceVisual.id = "ship-place-visual"
+    shipPlaceVisual.style.gridArea = `0 / 0 / 0 / 0`;
+
+
+    board.appendChild(shipPlaceVisual)
 
     // Append all elements inside the main container
     boardContainer.appendChild(heading);
@@ -185,7 +206,7 @@ function createShipPlacementControlsElement() {
 
     // Create the heading
     const heading = document.createElement("h3");
-    heading.textContent = "Placing Carrier (5 Long)";
+    heading.id = "current-ship-to-place-header"
 
     // Append heading inside the ship indicator container
     shipIndicator.appendChild(heading);
@@ -212,6 +233,7 @@ function createShipPlacementControlsElement() {
     const wrapper = document.createElement("div");
     wrapper.appendChild(shipIndicator);
     wrapper.appendChild(buttonContainer);
+    wrapper.classList.add("ship-controls-container")
 
     // Return the created element
     return wrapper;
@@ -287,6 +309,13 @@ function createShipList(shipArray=[["ShipName",[false]]])
     return shipList
 }
 
+function createShipTitle()
+{
+    let title = document.createElement("h3")
+    title.textContent = "Ships"
+    return title
+}
+
 function createRotateButton() {
     // Create the rotate container div
     const rotateContainer = document.createElement("div");
@@ -327,4 +356,5 @@ function createUpdateTextContainer() {
     return updateTextContainer;
 }
 
-export {createTileButton, createGamemodeSelect, createTurnCover}
+export {createTileButton, createGamemodeSelect, createPlayerSwitch, createBoardElement, 
+        createShipTitle, createShipPlacementControlsElement, createShipList}

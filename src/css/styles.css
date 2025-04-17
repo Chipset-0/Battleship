@@ -129,19 +129,19 @@ button:hover
     display: grid;
 }
 
-
-
-.left-sidebar
-{
-    display: grid;
-    grid-template-rows: 2fr 6fr;
-}
-
 .current-ship-indicator
 {
     display: grid;
     justify-content: center;
     align-content: center;
+}
+
+.ship-controls-container
+{
+    display: grid;
+    grid-template-rows: 2fr 6fr;
+    width: 100%;
+    height: 100%;
 }
 
 .button-container
@@ -215,6 +215,29 @@ button:hover
     border-radius: 8px;
 }
 
+#content
+{
+    padding: 0px 5%;
+    width:100%;
+}
+
+#ship-place-visual
+{
+    border-radius: 8px;
+    z-index: 99;
+    pointer-events: none;
+}
+
+.ship-place-error
+{
+    background-color: rgb(255, 94, 0);
+}
+
+.ship-place-good
+{
+    background-color: orange;
+}
+
 .board-container
 {
     display: grid;
@@ -222,7 +245,6 @@ button:hover
     align-content: center;
     aspect-ratio: 1/1;
     width:100%;
-    padding: 0px 5%;
 }
 
 .board-container h3
@@ -280,10 +302,6 @@ button:hover
     cursor: pointer;
 }
 
-.empty-tile
-{
-    /*Normal Tile*/
-}
 
 .miss
 {
