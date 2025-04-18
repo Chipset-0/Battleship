@@ -87,14 +87,21 @@ function createGamemodeSelect(functionComputer, functionPlayer)
   return gamemodeSelect;
 }
 
-function createPlayerSwitch() {
+function createPlayerSwitch(playerSwitchFunc, playerNumber) {
     // Create the main div element
     const turnCover = document.createElement('div');
     turnCover.className = 'turn-cover';
   
     // Create the h1 element
     const heading = document.createElement('h1');
-    heading.textContent = 'Player 1 Turn';
+    if (playerNumber == 1)
+    {
+        heading.textContent = 'Player 1 Turn';
+    }
+    else
+    {
+        heading.textContent = 'Player 2 Turn';
+    }
     turnCover.appendChild(heading);
   
     // Create the button element
@@ -102,11 +109,13 @@ function createPlayerSwitch() {
     button.className = 'player-switch-button';
     button.textContent = 'Continue';
     turnCover.appendChild(button);
+
+    button.addEventListener('click', () => {playerSwitchFunc()})
   
     return turnCover;
   }
   
-function createGameEndScreen(didPlayerOneWin=true, isComputerPlaying=false) 
+function createGameEndScreen(didPlayerOneWin=true, isPvp=false, restartFunction) 
 {
     // Create the main div element
     const gameEndScreen = document.createElement('div');
@@ -117,7 +126,7 @@ function createGameEndScreen(didPlayerOneWin=true, isComputerPlaying=false)
     // Assign correct victory text
     if (didPlayerOneWin)
     {
-        if (isComputerPlaying)
+        if (!isPvp)
         {
             heading.textContent = 'Human Wins!';
         }
@@ -128,7 +137,7 @@ function createGameEndScreen(didPlayerOneWin=true, isComputerPlaying=false)
     }
     else 
     {
-        if (isComputerPlaying)
+        if (!isPvp)
         {
             heading.textContent = "Computer Wins!"
         }
@@ -142,6 +151,8 @@ function createGameEndScreen(didPlayerOneWin=true, isComputerPlaying=false)
     restartButton.className = 'button-restart-game';
     restartButton.textContent = 'Restart';
 
+    restartButton.addEventListener('click', () => {restartFunction()})
+
     // Append the heading and button to the main div
     gameEndScreen.appendChild(heading);
     gameEndScreen.appendChild(restartButton);
@@ -149,7 +160,7 @@ function createGameEndScreen(didPlayerOneWin=true, isComputerPlaying=false)
     return gameEndScreen;
 }
 
-function createBoardElement(playerNumber, rotateFunction) {
+function createBoardElement(playerNumber) {
     // Create the main container div
     const boardContainer = document.createElement("div");
     boardContainer.classList.add("board-container");
@@ -157,6 +168,7 @@ function createBoardElement(playerNumber, rotateFunction) {
     // Create the heading
     const heading = document.createElement("h3");
     heading.textContent = "Player 1";
+    heading.id = "current-player-heading"
 
     // Create the inner div structure
     const innerDiv = document.createElement("div");
@@ -169,37 +181,23 @@ function createBoardElement(playerNumber, rotateFunction) {
     // Append board inside the inner div
     innerDiv.appendChild(board);
 
-    // Create the rotate container div
-    const rotateContainer = document.createElement("div");
-    rotateContainer.classList.add("rotate-container");
 
-    // Create the rotate button
-    const rotateButton = document.createElement("button");
-    rotateButton.classList.add("rotate-button");
-    rotateButton.textContent = "Rotate";
-
-    rotateButton.addEventListener("click", () => {rotateFunction()})
-
-    // Append button inside the rotate container
-    rotateContainer.appendChild(rotateButton);
-
-    const shipPlaceVisual = document.createElement("div");
-    shipPlaceVisual.id = "ship-place-visual"
-    shipPlaceVisual.style.gridArea = `0 / 0 / 0 / 0`;
+    const boardVisual = document.createElement("div");
+    boardVisual.id = "board-visual"
+    boardVisual.style.gridArea = `0 / 0 / 0 / 0`;
 
 
-    board.appendChild(shipPlaceVisual)
+    board.appendChild(boardVisual)
 
     // Append all elements inside the main container
     boardContainer.appendChild(heading);
     boardContainer.appendChild(innerDiv);
-    boardContainer.appendChild(rotateContainer);
 
     // Return the created element
     return boardContainer;
 }
 
-function createShipPlacementControlsElement() {
+function createShipPlacementControlsElement(autoPlaceFunc, clearFunc, rotateFunc) {
     // Create the main container for the ship indicator
     const shipIndicator = document.createElement("div");
     shipIndicator.classList.add("current-ship-indicator");
@@ -220,14 +218,28 @@ function createShipPlacementControlsElement() {
     autoPlaceButton.classList.add("sidebar-button", "button-auto-place");
     autoPlaceButton.textContent = "Auto-Place";
 
+    autoPlaceButton.addEventListener('click', autoPlaceFunc)
+
     // Create the clear button
     const clearButton = document.createElement("button");
     clearButton.classList.add("sidebar-button", "button-clear");
     clearButton.textContent = "Clear";
 
+    clearButton.addEventListener('click', () => {clearFunc()})
+
+
+    // Create the rotate button
+    const rotateButton = document.createElement("button");
+    rotateButton.classList.add("sidebar-button");
+    rotateButton.textContent = "Rotate";
+
+    rotateButton.addEventListener("click", () => {rotateFunc()})
+
+
     // Append buttons inside the button container
     buttonContainer.appendChild(autoPlaceButton);
     buttonContainer.appendChild(clearButton);
+    buttonContainer.appendChild(rotateButton);
 
     // Create a wrapper div for both elements
     const wrapper = document.createElement("div");
@@ -239,36 +251,14 @@ function createShipPlacementControlsElement() {
     return wrapper;
 }
 
-function createShipDisplay(shipType, hitStatus=[false]) {
-    // Create the carrier button
-    const carrierButton = document.createElement("button");
-    carrierButton.classList.add(shipType);
-
+function createShipDisplay(hitStatus=[]) {
     // Create the ship display container
     const shipDisplay = document.createElement("div");
-    shipDisplay.classList.add("ship-display", "carrier");
+    shipDisplay.classList.add("ship-display");
 
-    let length = -1
-    switch (shipType.toUpperCase())
-        {
-            case "TUG":
-                length = 2
-                break;
+    let length = hitStatus.length
 
-            case "SUB":
-                length = 3
-                break;
-
-            case "DESTROYER":
-                length = 4
-                break;
-
-            case "CARRIER":
-                length = 5
-                break;
-        }
-
-    let isSunk = hitStatus.includes(false)
+    let isSunk = !hitStatus.includes(false)
 
     // Create the ship tiles
     for (let i = 0; i < length; i++) {
@@ -278,7 +268,7 @@ function createShipDisplay(shipType, hitStatus=[false]) {
         {
             shipTile.classList.add("sunk")
         }
-        else if (hitStatus[0])
+        else if (hitStatus[i] == true)
         {
             shipTile.classList.add("hit")
         }
@@ -289,11 +279,9 @@ function createShipDisplay(shipType, hitStatus=[false]) {
         shipDisplay.appendChild(shipTile);
     }
 
-    // Append ship display inside the carrier button
-    carrierButton.appendChild(shipDisplay);
 
     // Return the created element
-    return carrierButton;
+    return shipDisplay;
 }
 
 function createShipList(shipArray=[["ShipName",[false]]])
@@ -316,45 +304,94 @@ function createShipTitle()
     return title
 }
 
-function createRotateButton() {
-    // Create the rotate container div
-    const rotateContainer = document.createElement("div");
-    rotateContainer.classList.add("rotate-container");
 
-    // Create the rotate button
-    const rotateButton = document.createElement("button");
-    rotateButton.classList.add("rotate-button");
-    rotateButton.textContent = "Rotate";
+function createConfirmButton(confirmFunction)
+{
+    let confirmButton = document.createElement("button")
+    confirmButton.id = "confirm-button"
+    
+    let confirmText = document.createElement("h3")
+    confirmText.textContent = "Confirm"
 
-    // Append button inside the rotate container
-    rotateContainer.appendChild(rotateButton);
+    confirmButton.appendChild(confirmText)
 
-    // Return the created element
-    return rotateContainer;
+    console.log("Function is : " + confirmFunction)
+
+    confirmButton.addEventListener('click', () => confirmFunction())
+
+    return confirmButton
 }
 
-function createUpdateTextContainer() {
-    // Create the update text container
-    const updateTextContainer = document.createElement("div");
-    updateTextContainer.classList.add("update-text-container");
+function createGameControls(restartFunc = () => {}) {
+    // Create the button container div
+    const buttonContainer = document.createElement("div");
+    buttonContainer.classList.add("button-container");
 
-    // Create the current player result heading
-    const currentPlayerResult = document.createElement("h3");
-    currentPlayerResult.classList.add("current-player-result");
-    currentPlayerResult.textContent = "You HIT!";
+    // Create the restart button
+    const restartButton = document.createElement("button");
+    restartButton.classList.add("sidebar-button", "button-restart");
+    restartButton.id = "button-restart-game"
+    restartButton.textContent = "Restart";
 
-    // Create the enemy player result heading
-    const enemyPlayerResult = document.createElement("h3");
-    enemyPlayerResult.classList.add("enemy-player-result");
-    enemyPlayerResult.textContent = "They MISSED";
+    restartButton.addEventListener('click', () => {restartFunc()})
 
-    // Append headings to the container
-    updateTextContainer.appendChild(currentPlayerResult);
-    updateTextContainer.appendChild(enemyPlayerResult);
+    // Append the button to the button container
+    buttonContainer.appendChild(restartButton);
 
-    // Return the created element
-    return updateTextContainer;
+    // Create the wrapper div for the mini-board
+    const boardWrapper = document.createElement("div");
+
+    // Create the mini-board div
+    const miniBoard = document.createElement("div");
+    miniBoard.classList.add("board", "small");
+    miniBoard.id = "mini-board";
+
+    // Append the mini-board inside the wrapper
+    boardWrapper.appendChild(miniBoard);
+
+    // Create a container to hold both elements
+    const container = document.createElement("div");
+    container.appendChild(buttonContainer);
+    container.appendChild(boardWrapper);
+    container.classList.add("game-left-container")
+
+    // Return the created structure
+    return container;
 }
+
+function createGameContent() {
+    // Create the player heading
+    const playerHeading = document.createElement("h3");
+    playerHeading.id = "current-player-heading";
+
+    // Create the wrapper div for the main board
+    const boardWrapper = document.createElement("div");
+
+    // Create the main board div
+    const mainBoard = document.createElement("div");
+    mainBoard.classList.add("board");
+    mainBoard.id = "main-board";
+
+    // Append the main board inside the wrapper
+    boardWrapper.appendChild(mainBoard);
+
+
+    const boardVisual = document.createElement("div");
+    boardVisual.id = "board-visual"
+    boardVisual.style.gridArea = `0 / 0 / 0 / 0`;
+
+    mainBoard.appendChild(boardVisual)
+
+    // Create a container to hold all elements
+    const container = document.createElement("div");
+    container.appendChild(playerHeading);
+    container.appendChild(boardWrapper);
+
+    // Return the created structure
+    return container;
+}
+
 
 export {createTileButton, createGamemodeSelect, createPlayerSwitch, createBoardElement, 
-        createShipTitle, createShipPlacementControlsElement, createShipList}
+        createShipTitle, createShipPlacementControlsElement, createShipList, createConfirmButton,
+        createShipDisplay, createGameControls, createGameContent, createGameEndScreen}

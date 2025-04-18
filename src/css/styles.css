@@ -92,7 +92,7 @@ button:hover
     align-items: center;
 }
 
-.button-restart-game
+#button-restart-game
 {
     width: fit-content;
     justify-self: center;
@@ -163,6 +163,11 @@ button:hover
     font-size: xx-large;
 }
 
+#right-sidebar
+{
+    display: flex;
+    flex-direction: column;
+}
 .right-sidebar
 {
     display: grid;
@@ -207,6 +212,15 @@ button:hover
     grid-template-columns: repeat(2, 1fr);
     
 }
+
+.ship-list
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    height: 100%;
+}
+
 .ship-tile
 {
     aspect-ratio: 1 / 1;
@@ -221,7 +235,7 @@ button:hover
     width:100%;
 }
 
-#ship-place-visual
+#board-visual
 {
     border-radius: 8px;
     z-index: 99;
@@ -266,23 +280,20 @@ button:hover
 
 }
 
-.rotate-container
+.game-left-container
 {
-    display: grid;
-    justify-content: center;
-    height: 100%;
-    padding-top: 16px;
+display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  height: 100%;
 }
 
-.rotate-button
+#confirm-button
 {
+    margin-top: auto;
+    margin-bottom: 25%;
+    width: 60%;
     align-self: center;
-    width:fit-content;
-    font-size: x-large;
-    background-color: rgba(255, 255, 255, 0.8);
-    border: solid black 2px;
-    padding: 4px;
-    border-radius: 8px;
 }
 
 .update-text-container

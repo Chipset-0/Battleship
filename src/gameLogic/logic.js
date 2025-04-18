@@ -1,4 +1,7 @@
-import {initialiseGamemodeSelect, initialiseShipPlacementElements, updateShipHighlight} from "../websiteLogic/updateUI.js"
+import {initialiseGamemodeSelect, initialiseShipPlacementElements, updateHighlight,
+    nextShip, clearShipPlacement, initialisePlayerSwitch, initialiseGameElements,
+    initialiseEndScreen
+} from "../websiteLogic/updateUI.js"
 import {Game} from "../gameObjects/Game.js"
 
 let game = new Game(false)
@@ -23,14 +26,14 @@ function gamemodeSelect()
 function startComputerGame()
 {
     console.log("Starting PvE match")
-    game = new Game(true)
+    game = new Game(false)
     nextState = 1
 }
 
 function startPlayerGame()
 {
     console.log("Starting PvP match")
-    game = new Game(false)
+    game = new Game(true)
     nextState = 1
     nextTurn()
 }
@@ -44,14 +47,16 @@ function placeShipOnTile(location)
 {
     console.log("Placing Ship on Location:" + location)
     let ship = game.getCurrentShip()
-    if (game.isValidLocation(location, ship[1]))
+    console.log(location + "|" + ship)
+    if (game.isValidLocation(location, game.getCurrentShip()[1], game.getIsVerticalRotation()))
     {
-        game.placeShip(game.getCurrentPlayerNumber(), location)
+        game.placeShip(location)
         game.incShip()
+        nextShip(game, startGame, startPlayerSwitch)
     }
     else
     {
-        
+        console.log("Invalid Ship Placement")
     }
 }
 
@@ -60,20 +65,90 @@ function calculateShipPlacement(location)
     console.log("Calculating placement")
     if (game.allShipsPlaced())
     {
-        updateShipHighlight(location, 0, 0)
+        updateHighlight(location, 0, 0)
     }
-    updateShipHighlight(location, game.getCurrentShip()[1],game.getIsVerticalRotation())
+    updateHighlight(location, game.getCurrentShip()[1],game.getIsVerticalRotation())
+}
+
+function clearShips()
+{
+    console.log("Clearing")
+    game.clearShips(game.getCurrentPlayerNumber())
+    clearShipPlacement(game)
 }
 
 function startShipPlacement()
 {
     console.log("Starting Ship Placement")
-    initialiseShipPlacementElements(game, switchRotation, placeShipOnTile, calculateShipPlacement)
+    game.resetCurrShip()
+    initialiseShipPlacementElements(game, switchRotation, placeShipOnTile, calculateShipPlacement, clearShips)
 }
 
 function startPlayerSwitch()
 {
     console.log("Starting Player Switch")
+    game.switchPlayer()
+    if (!gameStart)
+    {
+        gameStart = true
+        initialisePlayerSwitch(startShipPlacement, game.getCurrentPlayerNumber())
+    }
+    else
+    {
+        nextState = 3
+        initialisePlayerSwitch(startGame, game.getCurrentPlayerNumber())
+    }
+}
+
+function restart()
+{
+    //TODO implement restart function
+    nextState = 0
+    gameStart = false
+    nextTurn()
+}
+
+function attackFunction(location)
+{
+    if (game.hasBeenAttacked(location))
+    {
+        console.log("Cannot attack same location")
+        return
+    }
+    game.fireAttack(location)
+    if (game.checkIfWon() != 0)
+    {
+        nextState=4
+    }
+    else if (game.getIsPvp())
+    {
+        nextState = 2
+    }
+    else
+    {
+        nextState = 3
+        //TODO implement AI turn
+    }
+    nextTurn()
+}
+
+function attackHighlight(location)
+{
+    updateHighlight(location, 1, false)
+}
+
+function startGame()
+{
+    console.log("Starting Game")
+    initialiseGameElements(game, restart, attackFunction, attackHighlight)
+
+}
+
+function endGame()
+{
+    console.log("Ending Game")
+    let playerOneVictory = game.checkIfWon() == 1
+    initialiseEndScreen(playerOneVictory, game.getIsPvp(), restart)
 }
 
 function nextTurn()
@@ -90,10 +165,12 @@ function nextTurn()
             startPlayerSwitch()
             break;
         case 3: //Game
-            //TODO add Game functions
+            //TODO finish functionality
+            startGame()
             break;
         case 4: //GameEnd
             //TODO add GameEnd functions
+            endGame()
             break;
         default:
             throw new Error("Invalid gamestate integer received: " + nextState)

@@ -20,7 +20,7 @@ class Player
 
     receiveAttack(location)
     {
-        if (location.length == 2 && this.#gameboard.length > location[0] && location[0] > 0 && this.#gameboard.length > location[1] && location[1] > 0)
+        if (this.isValidLocation(0,location,false))
         {
             this.#gameboard.receiveAttack(location)
         }
@@ -38,6 +38,7 @@ class Player
             console.log(result)
         }
     }   
+    
 
     isValidLocation(length, location, isVertical=false)
     {
@@ -47,6 +48,11 @@ class Player
     getPlayerNumber()
     {
         return this.#playerNumber
+    }
+
+    getShipStatus()
+    {
+        return this.#gameboard.getShipStatus()
     }
 
     getIsComputer()
@@ -70,9 +76,19 @@ class Player
         return this.#gameboard.getEnemyBoard()
     }
 
+    hasBeenAttacked(location)
+    {
+        return this.#gameboard.hasBeenAttacked(location)
+    }
+
     hasLost()
     {
         return this.#gameboard.allShipsSunk()
+    }
+
+    clearGameboard()
+    {
+        this.#gameboard.reset()
     }
 }
 

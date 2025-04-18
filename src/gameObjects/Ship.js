@@ -45,14 +45,14 @@ class Ship
         let y = coordinates[1]
         if (isVertical)
         {
-            if (y+this.#length >= boardSize || y < 0 || x >= boardSize || x < 0)
+            if (y+this.#length-1 >= boardSize || y < 0 || x >= boardSize || x < 0)
             {
                 return false
             }
         }
         else
         {
-            if (x+this.#length >= boardSize || x < 0 || y >= boardSize || y < 0)
+            if (x+this.#length-1 >= boardSize || x < 0 || y >= boardSize || y < 0)
             {
                 return false
             }

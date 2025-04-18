@@ -90,6 +90,18 @@ class Gameboard
             return false
         }
 
+        //Check if ship already exists in any spots
+        for (let i = 0; i < length; i++)
+        {
+            if (isVertical && this.#board[location[0]][location[1]+i].hasShip())
+            {
+                return false
+            }
+            else if (!isVertical && this.#board[location[0]+i][location[1]].hasShip())
+            {
+                return false
+            }
+        }
         return true;
     }
 
@@ -135,6 +147,13 @@ class Gameboard
 
     }
 
+    hasBeenAttacked(location)
+    {
+        let tile = this.#board[location[0]][location[1]]
+        
+        return tile.isHit()
+    }
+
     allShipsSunk()
     {
         for (let i = 0; i < this.#ships.length; i++)
@@ -152,6 +171,7 @@ class Gameboard
     {
         /*
         Returns a 2D array of integers representing the board state from the player perspective
+        -1 = Empty, 0 = Miss, 1=Hit but not sunk, 2=Hit and Sunk, 3=Ship
         */
        let returnArray = []
        for (let i = 0; i < this.#size; i++)
@@ -188,6 +208,17 @@ class Gameboard
        }
 
        return returnArray
+    }
+
+    getShipStatus()
+    {
+        let result = []
+        for (let i = 0; i < this.#ships.length; i++)
+        {
+            result.push(this.#ships[i].getHitSections())
+        }
+
+        return result
     }
 
     getEnemyBoard()
@@ -227,10 +258,12 @@ class Gameboard
 
     reset()
     {
-        for (let i = 0; i < size; i++)
+        this.#board = []
+        this.#ships = []
+        for (let i = 0; i < this.#size; i++)
         {
             let temp = []
-            for (let j = 0; j < size; j++)
+            for (let j = 0; j < this.#size; j++)
             {
                 temp[j] = new BoardTile();
             }

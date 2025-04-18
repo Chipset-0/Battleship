@@ -12,7 +12,7 @@ class ComputerPlayer
 
     performAttack(enemyBoardState)
     {
-        //TODO implement computerAI for targetting
+        //TODO implement computerAI for targeting
     }
 };
 
@@ -33,7 +33,7 @@ class Game
     #shipPlaceVertical = false
     
 
-    constructor(isPvp=false)
+    constructor(isPvp=true)
     {
         this.#playerOne = new Player(1, false)
         this.#isPvp = isPvp
@@ -59,6 +59,35 @@ class Game
         return this.#availableShips[this.#currShip]
     }
 
+    fireAttack(location)
+    {
+        let enemy
+        if (this.getCurrentPlayerNumber() == 2)
+        {
+            enemy = this.#playerOne
+        }
+        else
+        {
+            enemy = this.#playerTwo
+        }
+
+        enemy.receiveAttack(location)
+    }
+
+    hasBeenAttacked(location)
+    {
+        let enemy
+        if (this.getCurrentPlayerNumber() == 2)
+        {
+            enemy = this.#playerOne
+        }
+        else
+        {
+            enemy = this.#playerTwo
+        }
+        return enemy.hasBeenAttacked(location)
+    }
+
     incShip()
     {
         this.#currShip++;
@@ -78,10 +107,16 @@ class Game
         return false;
     }
 
-    placeShip(playerNumber, location)
+    placeShip(location)
     {
         let player
-        if (playerNumber = 1)
+        if (this.allShipsPlaced())
+        {
+            console.log("Attempted to place ship while all ships have been placed")
+            return
+        }
+        let ship = this.getCurrentShip()
+        if (this.getCurrentPlayerNumber()==1)
         {
             player = this.#playerOne
         }
@@ -90,6 +125,31 @@ class Game
             player = this.#playerTwo
         }
 
+        if (this.isValidLocation(location, this.getCurrentShip()[1]))
+        {
+
+    
+            player.placeShip(ship[0],location, this.#shipPlaceVertical)
+        }
+        else
+        {
+            console.log("Did not place ship as location is invalid: " + location + "|" + ship[1])
+        }
+    }
+
+    getShipStatus()
+    {
+        let player
+        if (this.#currentPlayer == 1)
+        {
+            player = this.#playerOne
+        }
+        else
+        {
+            player = this.#playerTwo
+        }
+
+        return player.getShipStatus()
     }
 
     switchPlayer()
@@ -97,14 +157,12 @@ class Game
         if (this.#currentPlayer == 1)
         {
             this.#currentPlayer = 2
-            return this.#playerTwo
         }
         else
         {
             this.#currentPlayer = 1
-            return this.#playerOne
         }
-        
+        return this.#currentPlayer
     }
 
     checkIfWon()
@@ -133,10 +191,10 @@ class Game
         }
     }
 
-    getBoardState(playerNumber)
+    getBoardState()
     {
         //Gets the board state visible to the player with the given player number
-        if (playerNumber==1)
+        if (this.#currentPlayer==1)
         {
             return this.#playerOne.getOwnGameboard()
         }
@@ -146,10 +204,10 @@ class Game
         }
     }
 
-    getEnemyBoardState(playerNumber)
+    getEnemyBoardState()
     {
         //Gets the board state of the player with the given player number from the enemy point of view
-        if (playerNumber==1)
+        if (this.#currentPlayer==2)
         {
             return this.#playerOne.getEnemyGameboard()
         }
@@ -171,24 +229,19 @@ class Game
 
     isValidLocation(location=[0,0], length=0)
     {
-        //If negative coords or coords exceed length, fail
-        if ((location[0] < 0 || location[1] < 0) || (location[0] > 9 ||location[1] > 9))
+        /*
+            Checks if a location is a valid placement for a ship
+        */ 
+        let player
+        if (this.#currentPlayer == 1)
         {
-            return false
+            player = this.#playerOne
         }
-        //If placing horizontal, check if longest part of ship is within bounds
-        if (!this.#shipPlaceVertical && location[0]+length-1 < 9)
+        else
         {
-            return true
+            player = this.#playerTwo
         }
-        //If placing vertical, check if longest part of ship is within bounds
-        if (this.#shipPlaceVertical && location[1]+length-1 < 9)
-        {
-            return true
-        }
-
-        //If failed both previous checks, return false
-        return false
+        return player.isValidLocation(length, location, this.#shipPlaceVertical)
     }
 
     setShipPlaceVertical(newVerticalBool)
@@ -204,6 +257,32 @@ class Game
     {
         return this.#shipPlaceVertical
     }
+
+    autoPlaceShips(playerNumber)
+    {
+        //TODO
+
+        console.log("Auto Placing Ships for player" + playerNumber)
+    }
+
+    clearShips(playerNumber)
+    {
+        if (playerNumber==1)
+        {
+            this.#playerOne.clearGameboard()
+        }
+        else
+        {
+            this.#playerTwo.clearGameboard()
+        }
+        this.resetCurrShip()
+    }
+
+    resetCurrShip()
+    {
+        this.#currShip = 0
+    }
+    
 }
 
 export {Game}
