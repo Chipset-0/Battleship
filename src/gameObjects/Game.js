@@ -2,17 +2,50 @@ const {Player} = require("./Player")
 
 class ComputerPlayer
 {
-    #difficulty = 1
-    #hits = []
     
-    constructor(difficulty=1)
+    constructor()
     {
-        this.#difficulty = 1
     }
 
     performAttack(enemyBoardState)
     {
         //TODO implement computerAI for targeting
+
+        //Find all successful hit tiles
+
+        let hits = []
+        for (let i = 0; i < enemyBoardState.length; i++)
+        {
+            for (let j = 0; j < enemyBoardState.length; j++)
+            {
+                if (enemyBoardState[i][j] == 1)
+                {
+                    hits.push([i,j])
+                }
+            }
+        }
+
+        //Check for unhit tiles near successful hits
+        for (let i = 0;i < hits.length; i++)
+        {
+            let hit = hits[i]
+            if (enemyBoardState[hit[0]][hit[1]] == -1)
+            {
+                return hit
+            }
+        }
+
+        //If there is no good targets, choose randomly
+        while (true)
+        {
+            let x = Math.floor(9*Math.random())
+            let y = Math.floor(9*Math.random())
+            if (enemyBoardState[x][y] == -1)
+            {
+                fired=true
+                return [x,y]
+            }
+        }
     }
 };
 
@@ -285,4 +318,4 @@ class Game
     
 }
 
-export {Game}
+export {Game, ComputerPlayer}
