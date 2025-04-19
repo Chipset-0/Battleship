@@ -1,18 +1,20 @@
 import {initialiseGamemodeSelect, initialiseShipPlacementElements, updateHighlight,
     nextShip, clearShipPlacement, initialisePlayerSwitch, initialiseGameElements,
-    initialiseEndScreen
+    initialiseEndScreen,
+    updateShipPlacementBoard,
+    addConfirmButton,
+    populateShipDisplay,
+    updateGameElements
 } from "../websiteLogic/updateUI.js"
-import {Game} from "../gameObjects/Game.js"
+import {Game, ComputerPlayer} from "../gameObjects/Game.js"
 
 let game = new Game(false)
+let computer = new ComputerPlayer()
 
 //GamemodeSelect=0, ShipPlacement=1, PlayerSwitch=2, Game=3, GameEnd=4
 let nextState = 0
 let gameStart = false
-let mainBoardElements = []
-let miniBoardElements = []
-
-let isVerticalRotation = false;
+let lockFire = false
 
 function gamemodeSelect()
 {
@@ -25,17 +27,35 @@ function gamemodeSelect()
 
 function startComputerGame()
 {
-    console.log("Starting PvE match")
     game = new Game(false)
     nextState = 1
+    nextTurn()
 }
 
 function startPlayerGame()
 {
-    console.log("Starting PvP match")
     game = new Game(true)
     nextState = 1
     nextTurn()
+}
+
+function autoPlacePlayer()
+{
+    game.autoPlaceShipsCurrent()
+
+    updateShipPlacementBoard(game.getBoardState())
+    updateHighlight([0,0], 0, false)
+    populateShipDisplay(game.getShipStatus())
+    if (game.getIsPvp())
+    {
+        addConfirmButton(startPlayerSwitch)
+    }
+    else
+    {
+        addConfirmButton(startGame)
+    }
+    
+    
 }
 
 function switchRotation()
@@ -45,9 +65,6 @@ function switchRotation()
 
 function placeShipOnTile(location)
 {
-    console.log("Placing Ship on Location:" + location)
-    let ship = game.getCurrentShip()
-    console.log(location + "|" + ship)
     if (game.isValidLocation(location, game.getCurrentShip()[1], game.getIsVerticalRotation()))
     {
         game.placeShip(location)
@@ -62,7 +79,6 @@ function placeShipOnTile(location)
 
 function calculateShipPlacement(location)
 {
-    console.log("Calculating placement")
     if (game.allShipsPlaced())
     {
         updateHighlight(location, 0, 0)
@@ -72,21 +88,19 @@ function calculateShipPlacement(location)
 
 function clearShips()
 {
-    console.log("Clearing")
+    updateHighlight([0,0], 0, false)
     game.clearShips(game.getCurrentPlayerNumber())
     clearShipPlacement(game)
 }
 
 function startShipPlacement()
 {
-    console.log("Starting Ship Placement")
     game.resetCurrShip()
-    initialiseShipPlacementElements(game, switchRotation, placeShipOnTile, calculateShipPlacement, clearShips)
+    initialiseShipPlacementElements(game, switchRotation, placeShipOnTile, calculateShipPlacement, clearShips, autoPlacePlayer)
 }
 
 function startPlayerSwitch()
 {
-    console.log("Starting Player Switch")
     game.switchPlayer()
     if (!gameStart)
     {
@@ -102,7 +116,6 @@ function startPlayerSwitch()
 
 function restart()
 {
-    //TODO implement restart function
     nextState = 0
     gameStart = false
     nextTurn()
@@ -110,24 +123,38 @@ function restart()
 
 function attackFunction(location)
 {
-    if (game.hasBeenAttacked(location))
+    if (lockFire)
     {
-        console.log("Cannot attack same location")
+        console.log("Firing is locked")
         return
     }
-    game.fireAttack(location)
-    if (game.checkIfWon() != 0)
-    {
-        nextState=4
-    }
-    else if (game.getIsPvp())
-    {
-        nextState = 2
-    }
-    else
-    {
-        nextState = 3
-        //TODO implement AI turn
+    lockFire = true
+    try{
+        if (game.hasBeenAttacked(location))
+        {
+            console.log("Cannot attack same location")
+            return
+        }
+
+        game.fireAttack(location)
+        if (game.getIsPvp())
+        {
+            nextState = 2
+        }
+        else
+        {
+            nextState = 5
+            
+            game.fireAttackComputer(computer.performAttack(game.getPlayerEnemyBoardState()))
+        }
+
+        if (game.checkIfWon() != 0)
+        {
+            nextState=4
+        }
+
+    } finally {
+        lockFire = false
     }
     nextTurn()
 }
@@ -139,14 +166,23 @@ function attackHighlight(location)
 
 function startGame()
 {
-    console.log("Starting Game")
+    if (!game.getIsPvp())
+    {
+        game.resetCurrShip()
+        game.autoPlaceShips(2)
+    }
     initialiseGameElements(game, restart, attackFunction, attackHighlight)
 
 }
 
+function updateGame()
+{
+    console.log("Updating Game")
+    updateGameElements(game)
+}
+
 function endGame()
 {
-    console.log("Ending Game")
     let playerOneVictory = game.checkIfWon() == 1
     initialiseEndScreen(playerOneVictory, game.getIsPvp(), restart)
 }
@@ -165,12 +201,13 @@ function nextTurn()
             startPlayerSwitch()
             break;
         case 3: //Game
-            //TODO finish functionality
             startGame()
             break;
         case 4: //GameEnd
-            //TODO add GameEnd functions
             endGame()
+            break;
+        case 5: //Process PvE Outcome
+            updateGame()
             break;
         default:
             throw new Error("Invalid gamestate integer received: " + nextState)

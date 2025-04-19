@@ -20,7 +20,7 @@ class Player
 
     receiveAttack(location)
     {
-        if (this.isValidLocation(0,location,false))
+        if (this.#gameboard.isValidAttack(location))
         {
             this.#gameboard.receiveAttack(location)
         }
@@ -32,11 +32,7 @@ class Player
 
     placeShip(shipType, location, orientation)
     {
-        let result = this.#gameboard.placeShip(shipType, location, orientation)
-        if (result != "")
-        {
-            console.log(result)
-        }
+        this.#gameboard.placeShip(shipType, location, orientation)
     }   
     
 

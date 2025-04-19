@@ -76,6 +76,7 @@ class Gameboard
         }
         this.#size = size
     }
+    
 
     isValidLocation(location, length, isVertical)
     {
@@ -85,7 +86,7 @@ class Gameboard
         }
         let x = location[0]
         let y = location[1]
-        if ((isVertical && y+length > this.#size) || (!isVertical && x+length > this.#size))
+        if ((isVertical && y+length >= this.#size) || (!isVertical && x+length >= this.#size))
         {
             return false
         }
@@ -137,12 +138,31 @@ class Gameboard
         return ""
     }
 
+    isValidAttack(location)
+    {
+        if (location.length != 2 || location[0] < 0 || location[1] < 0 || location[0] >= this.#size || location[1] >= this.#size)
+        {
+            return false
+        }
+
+        if (this.#board[location[0]][location[1]].isHit())
+        {
+            return false
+        }
+
+        return true
+    }
+
     receiveAttack(location)
     {
         /*
         Function that takes a board location and checks if it was a miss, if it was a hit or if it was a hit that sunk a ship.
         It returns a number with 0 being miss, 1 being hit and 2 being a sinking hit.
         */
+        if (!this.isValidAttack(location))
+        {
+            return false
+        }
         return this.#board[location[0]][location[1]].hitTile()
 
     }

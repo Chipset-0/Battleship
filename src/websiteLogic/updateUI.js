@@ -11,24 +11,24 @@ const leftSidebar = document.getElementById("left-sidebar")
 const boardContainer = document.getElementById("content")
 const rightSidebar = document.getElementById("right-sidebar")
 
-function updateTiles(board, boardState, clickFunc = () => {}, hoverFunc = () => {})
+function updateTiles(board, boardState)
 {
     for (let i = 0; i < boardState.length; i++)
     {
         for (let j = 0; j < boardState[0].length; j++)
         {
-            board.appendChild(createTileButton([i,j], boardState[i][j], clickFunc, hoverFunc))
+            board.appendChild(createTileButton([i,j], boardState[i][j]))
         }
     }
 }
 
 //TODO test these functions
-function populateMainBoard(boardState, clickFunction, hoverFunc)
+function populateMainBoard(boardState)
 {
     //Populates the main board to show current game state
     let board = document.getElementById("main-board")
 
-    updateTiles(board, boardState, clickFunction, hoverFunc)
+    updateTiles(board, boardState)
 
 }
 
@@ -64,13 +64,13 @@ function updateBoard(board, boardState)
     }
 }
 
-function populateMiniBoard(boardState, clickFunction, hoverFunc)
+function populateMiniBoard(boardState)
 {
     //Populates the main board to show current game state
 
     let miniBoard = document.getElementById("mini-board")
 
-    updateTiles(miniBoard, boardState, clickFunction, hoverFunc)
+    updateTiles(miniBoard, boardState)
 }
 
 function clearMiniBoard(board)
@@ -206,7 +206,10 @@ function showShipHighlight()
 
 function addConfirmButton(confirmFunction)
 {
-    rightSidebar.appendChild(createConfirmButton(confirmFunction))
+    if (!doesConfirmButtonExist())
+    {
+        rightSidebar.appendChild(createConfirmButton(confirmFunction))
+    }    
 }
 
 function removeConfirmButton()
@@ -227,24 +230,23 @@ function initialiseGamemodeSelect(functionComputer, functionPlayer)
     screenCover.appendChild(gamemodeSelectElement)
 }
 
-function initialiseShipPlacementElements(game, rotateFunction, tileClickFunction, hoverFunc, clearFunc)
+function initialiseShipPlacementElements(game, rotateFunction, tileClickFunction, hoverFunc, clearFunc, autoFunc)
 {
     
     clearAll()
     hideScreenCover()
     
-    //TODO implement autoplace
-    let shipControls = createShipPlacementControlsElement(()=>{},clearFunc, rotateFunction)
+    let shipControls = createShipPlacementControlsElement(autoFunc,clearFunc, rotateFunction)
     leftSidebar.appendChild(shipControls)
 
     rightSidebar.appendChild(createShipTitle())
     rightSidebar.appendChild(createShipList(null))
 
 
-    let mainBoard = createBoardElement(game.getCurrentPlayerNumber())
+    let mainBoard = createBoardElement(tileClickFunction, hoverFunc)
     boardContainer.appendChild(mainBoard)
 
-    populateMainBoard(game.getBoardState(), tileClickFunction, hoverFunc)
+    populateMainBoard(game.getBoardState(), )
     populateShipDisplay(game.getShipStatus())
 
     updateShipPlacementHeader(game.getCurrentShip())
@@ -266,6 +268,11 @@ function clearShipPlacement(game)
 function doesConfirmButtonExist()
 {
     return document.getElementById("confirm-button")
+}
+
+function updateShipPlacementBoard(boardState)
+{
+    updateBoard(document.getElementById("main-board"), boardState)
 }
 
 function nextShip(game, confirmComputerFunction, confirmPlayerFunction)
@@ -300,15 +307,22 @@ function initialiseGameElements (game, resetFunc, tileClickFunction, hoverFunc)
     let gameControls = createGameControls(resetFunc)
     leftSidebar.appendChild(gameControls)
 
-    let gameContent = createGameContent()
-    boardContainer.appendChild(gameContent)
+    let content = createBoardElement(tileClickFunction, hoverFunc)
+    boardContainer.appendChild(content)
     updatePlayerHeader(game.getCurrentPlayerNumber())
 
     rightSidebar.appendChild(createShipTitle())
     rightSidebar.appendChild(createShipList())
 
-    populateMainBoard(game.getEnemyBoardState(), tileClickFunction, hoverFunc)
-    populateMiniBoard(game.getBoardState(), ()=>{}, ()=>{})
+    populateMainBoard(game.getEnemyBoardState())
+    populateMiniBoard(game.getBoardState())
+    populateShipDisplay(game.getShipStatus())
+}
+
+function updateGameElements(game)
+{
+    updateBoard(document.getElementById("main-board"), game.getEnemyBoardState())
+    updateBoard(document.getElementById("mini-board"), game.getBoardState())
     populateShipDisplay(game.getShipStatus())
 }
 
@@ -334,4 +348,5 @@ function initialiseEndScreen(didPlayerOneWin, isPvp, restartFunction)
 }
 
 export {initialiseGamemodeSelect, initialiseShipPlacementElements, initialiseGameElements, 
-    updateHighlight, nextShip, clearShipPlacement, initialisePlayerSwitch, initialiseEndScreen}
+    updateHighlight, nextShip, clearShipPlacement, initialisePlayerSwitch, initialiseEndScreen,
+    updateShipPlacementBoard, addConfirmButton, populateShipDisplay, updateGameElements}

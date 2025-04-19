@@ -2,23 +2,22 @@ const {Player} = require("./Player")
 
 class ComputerPlayer
 {
+    #attackTarget
     
-    constructor()
+    getNextAttack()
     {
+
     }
 
     performAttack(enemyBoardState)
     {
-        //TODO implement computerAI for targeting
-
-        //Find all successful hit tiles
-
         let hits = []
-        for (let i = 0; i < enemyBoardState.length; i++)
+        let size = enemyBoardState.length
+        for (let i = 0; i < size; i++)
         {
-            for (let j = 0; j < enemyBoardState.length; j++)
+            for (let j = 0; j < size; j++)
             {
-                if (enemyBoardState[i][j] == 1)
+                if (enemyBoardState[i][j] === 1)
                 {
                     hits.push([i,j])
                 }
@@ -26,26 +25,53 @@ class ComputerPlayer
         }
 
         //Check for unhit tiles near successful hits
-        for (let i = 0;i < hits.length; i++)
+        for (const hit of hits)
         {
-            let hit = hits[i]
-            if (enemyBoardState[hit[0]][hit[1]] == -1)
+            const [row, col] = hit
+            //Check UP
+            if (row-1 >= 0 && enemyBoardState[row-1][col]===-1)
             {
-                return hit
+                return [row-1,col]
+            }
+            //Check DOWN
+
+            if (row+1 < size && enemyBoardState[row+1][col]===-1)
+            {
+                return [row+1,col]
+            }
+            //Check LEFT
+            if (col-1 >= 0 && enemyBoardState[row][col-1]===-1)
+            {
+                return [row,col-1]
+            }
+            //Check RIGHT
+            if (col+1 < size && enemyBoardState[row][col+1]===-1)
+            {
+                return [row,col+1]
             }
         }
 
         //If there is no good targets, choose randomly
-        while (true)
+        
+        let viableCells = []
+        for (let i = 0; i < size; i++)
         {
-            let x = Math.floor(9*Math.random())
-            let y = Math.floor(9*Math.random())
-            if (enemyBoardState[x][y] == -1)
+            for (let j = 0; j < size; j++)
             {
-                fired=true
-                return [x,y]
+                if (enemyBoardState[i][j] === -1)
+                {
+                    viableCells.push([i,j])
+                }
             }
         }
+        if (viableCells.length === 0)
+        {
+            console.log("No viable cell found")
+            return null
+        }
+
+        let index = Math.round(Math.random()*viableCells.length)
+        return viableCells[index]
     }
 };
 
@@ -107,6 +133,15 @@ class Game
         enemy.receiveAttack(location)
     }
 
+    fireAttackComputer(location)
+    {
+        if (this.#isPvp)
+        {
+            return
+        }
+        this.#playerOne.receiveAttack(location)
+    }
+
     hasBeenAttacked(location)
     {
         let enemy
@@ -140,7 +175,7 @@ class Game
         return false;
     }
 
-    placeShip(location)
+    placeShip(location, playerNumber=0)
     {
         let player
         if (this.allShipsPlaced())
@@ -148,8 +183,14 @@ class Game
             console.log("Attempted to place ship while all ships have been placed")
             return
         }
+
+        if (playerNumber === 0 )
+        {
+            playerNumber = this.getCurrentPlayerNumber()
+        }
+
         let ship = this.getCurrentShip()
-        if (this.getCurrentPlayerNumber()==1)
+        if (playerNumber === 1)
         {
             player = this.#playerOne
         }
@@ -158,16 +199,19 @@ class Game
             player = this.#playerTwo
         }
 
-        if (this.isValidLocation(location, this.getCurrentShip()[1]))
+        if (this.isValidLocation(location, this.getCurrentShip()[1], playerNumber))
         {
-
-    
             player.placeShip(ship[0],location, this.#shipPlaceVertical)
         }
         else
         {
             console.log("Did not place ship as location is invalid: " + location + "|" + ship[1])
         }
+    }
+
+    placeShipCurrent(location)
+    {
+        this.placeShip(location, this.getCurrentPlayerNumber())
     }
 
     getShipStatus()
@@ -250,6 +294,21 @@ class Game
         }
     }
 
+    getComputerEnemyBoardState()
+    {
+        if (this.#isPvp)
+        {
+            return
+        }
+        return this.#playerTwo.getEnemyGameboard()
+    }
+
+
+    getPlayerEnemyBoardState()
+    {
+        return this.#playerOne.getEnemyGameboard()
+    }
+
     getIsPvp()
     {
         return this.#isPvp
@@ -260,13 +319,13 @@ class Game
         return this.#currentPlayer
     }
 
-    isValidLocation(location=[0,0], length=0)
+    isValidLocation(location=[0,0], length=0, playerNumber)
     {
         /*
             Checks if a location is a valid placement for a ship
         */ 
         let player
-        if (this.#currentPlayer == 1)
+        if (playerNumber == 1)
         {
             player = this.#playerOne
         }
@@ -275,6 +334,11 @@ class Game
             player = this.#playerTwo
         }
         return player.isValidLocation(length, location, this.#shipPlaceVertical)
+    }
+
+    isValidLocationCurrent(location, length)
+    {
+        return this.isValidLocation(location, length, this.getCurrentPlayerNumber())
     }
 
     setShipPlaceVertical(newVerticalBool)
@@ -291,11 +355,62 @@ class Game
         return this.#shipPlaceVertical
     }
 
+    autoPlaceShipsCurrent()
+    {
+        let origRotation = this.getIsVerticalRotation()
+        while (!this.allShipsPlaced())
+        {
+            let ship = this.getCurrentShip()
+            this.setShipPlaceVertical(Math.round(Math.random()))
+            let row = Math.round(Math.random() * 8)
+            let column = Math.round(Math.random() * 8)
+    
+            while (!this.isValidLocationCurrent([row,column], ship[1]))
+            {
+                row += 1
+                if (row >= 9)
+                {
+                    row = 0
+                    column += 1
+                    if (column >= 9)
+                    {
+                        column = 0
+                    }
+                }
+            }
+            this.placeShipCurrent([row,column])
+            this.incShip()
+        }
+        this.setShipPlaceVertical(origRotation)
+    }
+
     autoPlaceShips(playerNumber)
     {
-        //TODO
-
-        console.log("Auto Placing Ships for player" + playerNumber)
+        let origRotation = this.getIsVerticalRotation()
+        while (!this.allShipsPlaced())
+        {
+            let ship = this.getCurrentShip()
+            this.setShipPlaceVertical(Math.round(Math.random()))
+            let row = Math.round(Math.random() * 8)
+            let column = Math.round(Math.random() * 8)
+    
+            while (!this.isValidLocation([row,column], ship[1], playerNumber))
+            {
+                row += 1
+                if (row >= 9)
+                {
+                    row = 0
+                    column += 1
+                    if (column >= 9)
+                    {
+                        column = 0
+                    }
+                }
+            }
+            this.placeShip([row,column], playerNumber)
+            this.incShip()
+        }
+        this.setShipPlaceVertical(origRotation)
     }
 
     clearShips(playerNumber)

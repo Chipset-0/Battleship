@@ -3,7 +3,7 @@ import COMPUTER_IMAGE from "../assets/pvp-freepik.png"
 
 //TODO Create functions that create end game screens, ship indicators, battleship UI and placing ship UI
 
-function createTileButton(location, state=-1, clickFunction, hoverFunction)
+function createTileButton(location, state=-1)
 {
     let button = document.createElement("button")
     button.classList.add("tile")
@@ -25,8 +25,7 @@ function createTileButton(location, state=-1, clickFunction, hoverFunction)
         case 3:
             button.classList.add("ship-exists")
     }
-    button.addEventListener('click', () => {clickFunction(location)})
-    button.addEventListener('mouseover', () => {hoverFunction(location)})
+    button.dataset.location = JSON.stringify(location);
     return button
 }
 
@@ -160,14 +159,13 @@ function createGameEndScreen(didPlayerOneWin=true, isPvp=false, restartFunction)
     return gameEndScreen;
 }
 
-function createBoardElement(playerNumber) {
+function createBoardElement(clickFunc, hoverFunc) {
     // Create the main container div
     const boardContainer = document.createElement("div");
     boardContainer.classList.add("board-container");
 
     // Create the heading
     const heading = document.createElement("h3");
-    heading.textContent = "Player 1";
     heading.id = "current-player-heading"
 
     // Create the inner div structure
@@ -177,6 +175,20 @@ function createBoardElement(playerNumber) {
     const board = document.createElement("div");
     board.classList.add("board");
     board.id = "main-board";
+    board.addEventListener("click", (event) => {
+        if (event.target.matches("button.tile")) {
+            let location = JSON.parse(event.target.dataset.location);
+            clickFunc(location)
+        }
+    })
+    board.addEventListener("mouseover", (event) => {
+        const tile = event.target.closest("button.tile");
+        if (tile && board.contains(tile))
+        {
+            const location = JSON.parse(tile.dataset.location)
+            hoverFunc(location);
+        }
+    });
 
     // Append board inside the inner div
     innerDiv.appendChild(board);
@@ -315,7 +327,6 @@ function createConfirmButton(confirmFunction)
 
     confirmButton.appendChild(confirmText)
 
-    console.log("Function is : " + confirmFunction)
 
     confirmButton.addEventListener('click', () => confirmFunction())
 
@@ -359,7 +370,7 @@ function createGameControls(restartFunc = () => {}) {
     return container;
 }
 
-function createGameContent() {
+function createGameContent(clickFunc, hoverFunc) {
     // Create the player heading
     const playerHeading = document.createElement("h3");
     playerHeading.id = "current-player-heading";
@@ -367,11 +378,8 @@ function createGameContent() {
     // Create the wrapper div for the main board
     const boardWrapper = document.createElement("div");
 
-    // Create the main board div
-    const mainBoard = document.createElement("div");
-    mainBoard.classList.add("board");
-    mainBoard.id = "main-board";
-
+    const mainBoard = createBoardElement(clickFunc, hoverFunc)
+    
     // Append the main board inside the wrapper
     boardWrapper.appendChild(mainBoard);
 
